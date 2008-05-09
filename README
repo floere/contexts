@@ -1,0 +1,46 @@
+# This plugin is a simple replacement for … 
+
+# In the view, e.g. application.haml call
+render_context(category)
+
+# Example:
+render_context(:left_sidebar)
+# In this case, the specific context is determined by the controller, just
+# define the context for this controller as follows:
+context :left_sidebar, :top_ten_books
+# if you wish to differentiate between actions, define the default first, then specific contexts
+# for specific actions
+context :left_sidebar, :top_ten_books,
+  [:buy, :browse] => :other_books_you_might_like,
+  :login          => :welcome
+# For the login action you wish to display the welcome context in the left sidebar, for the buy and browse action, some exploratory books are shown. For all other actions, e.g. index, edit, show, just show the current top ten books.
+
+# OR if the specific context type should not be determined by the controller:
+render_context(category, type)
+
+# Example
+render_context(:left_sidebar, :top_ten_books)
+# This just renders the context for the top ten books in the left sidebar
+
+# Loading variables for your contexts is done in the ApplicationController (or in the Controller needed)
+#
+# In your ApplicationController call
+load_context(category, type, [options], &loading_instance_variables_block)
+
+# Currently supported options are:
+# :cache => true
+
+# Example:
+load_context :left_sidebar, :top_ten_books, :cache => true do
+  @books = Books.top(10)
+end
+# This loads the top ten books into the variable @books, which can then be used in the view file top_ten_books.haml:
+%h1 Top Ten Books
+- for book in @books do
+  %h2= book.title
+  %p=  book.description
+  = add_to_cart(book)
+# The context view files should be in views/contexts/<category>/<type>.haml (or .erb)
+#
+# Example: The above file would be in
+# app/views/contexts/left_sidebar/top_ten_books.haml
