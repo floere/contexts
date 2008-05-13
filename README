@@ -1,4 +1,18 @@
-# This plugin is a simple replacement for … 
+# This plugin is a simple alternative for components.
+# It is not a full replacement, however. It aims lower, namely:
+# - Sub-per-action component definitions.
+# - Built-in caching.
+#
+# It is good, when:
+# 1. You wish to define certain view parts that are used for many controller actions.
+# 2. You wish to cache these view parts.
+# 3. You wish to not have specific controllers to load the content for these view parts.
+#
+# Good use cases:
+# - Checkout Cart displayed in site sidebar.
+# - Explorative Elements (e.g. Top Ten Books) in Sidebars.
+# - Navigational Elements on almost all pages.
+# - And so on…
 
 # In the view, e.g. application.haml call
 render_context(category)
@@ -39,7 +53,7 @@ end
 - for book in @books do
   %h2= book.title
   %p=  book.description
-  = add_to_cart(book)
+  = link_to_add_to_cart(book)
 # The context view files should be in views/contexts/<category>/<type>.haml (or .erb)
 #
 # Example: The above file would be in
