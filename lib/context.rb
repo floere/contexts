@@ -37,7 +37,9 @@ class Context
   # Does the actual rendering, caching, and view exposing to the controller.
   #
   def render
-    fragment = cached_fragment if caching_enabled?
+    caching_enabled = caching_enabled?
+    
+    fragment = cached_fragment if caching_enabled
     return fragment if fragment
     
     view_instance = view_instance_from view_class
@@ -52,17 +54,23 @@ class Context
   # Checks if caching is enabled for this controller, category, and type.
   #
   def caching_enabled?
-    caching_enabled_method_name = "cache_context_for_#{category}_#{type_method_name}?".to_sym
-    controller.respond_to?(caching_enabled_method_name) && controller.send(caching_enabled_method_name)
+    cache_duration != false
   end
   
   # Caches the given fragment for this context.
   #
   def cache(content)
-    controller.write_fragment cache_key, content, :ttl => 300
+    controller.write_fragment cache_key, content, :ttl => cache_duration
   end
   
   private
+  
+    # Gets the cache duration from the controller.
+    #
+    def cache_duration
+      caching_enabled_method_name = "context_cache_duration_for_#{category}_#{type_method_name}".to_sym
+      controller.respond_to?(caching_enabled_method_name) && controller.send(caching_enabled_method_name)
+    end
   
     # Renders the template for the context with the given view instance.
     #

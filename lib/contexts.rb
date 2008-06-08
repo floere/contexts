@@ -53,10 +53,13 @@ module Contexts
     # Creates code that is used to load context data for a specific category type.
     # load_context_data_for_<category>_<type>
     #
-    def load_context(category, type, options = {}, &block)
+    def load_context(category, type, caching_options = {}, &block)
       type_method_name_part = Context.methodify(type)
-      define_method "cache_context_for_#{category}_#{type_method_name_part}?" do
-        options[:cache]
+      cache_duration = caching_options[:cache]
+      if cache_duration
+        define_method "context_cache_duration_for_#{category}_#{type_method_name_part}" do
+          cache_duration
+        end
       end
       define_method "load_context_data_for_#{category}_#{type_method_name_part}" do |view_instance|
         view_instance.instance_eval(&block)
