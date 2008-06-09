@@ -21,6 +21,24 @@ describe Contexts do
     it "should have added a method" do
       test_object.respond_to?(:load_context_data_for_title_exploration__band).should be_true
     end
+    it "should not have added a caching method" do
+      test_object.respond_to?(:context_cache_duration_for_title_exploration__band).should be_false
+    end
+  end
+  describe "cached context loading" do
+    before(:each) do
+      class << test_object
+        load_context :title, 'exploration/band', :cache => 3.minutes do
+          @test = 'test test'
+        end
+      end
+    end
+    it "should should have added a caching method" do
+      test_object.respond_to?(:context_cache_duration_for_title_exploration__band).should be_true
+    end
+    it "should have a caching method that returns 3 minutes in seconds" do
+      test_object.context_cache_duration_for_title_exploration__band.should == 180
+    end
   end
   describe "instance variable injection success" do
     before(:each) do
@@ -64,7 +82,6 @@ describe Contexts do
     end
     describe "with no view instance instance variables" do
       before(:each) do
-        @view_instance
         test_object.load_context_data_for_title_profile(@view_instance)
       end
       it "should have an instance variable @test" do

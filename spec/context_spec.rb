@@ -41,8 +41,8 @@ describe Context do
       describe "enabled caching" do
         describe "caching" do
           before(:each) do
-            @controller_mock.should_receive(:respond_to?).with(:cache_context_for_category_dir__to__type?).once.and_return(true)
-            @controller_mock.should_receive(:send).with(:cache_context_for_category_dir__to__type?).once.and_return(true)
+            @controller_mock.should_receive(:respond_to?).
+              with(:context_cache_duration_for_category_dir__to__type).once.and_return(true)
           end
           it "should use caching" do
             context.caching_enabled?.should be_true
@@ -52,7 +52,10 @@ describe Context do
           it "should delegate writing the fragment to the controller" do
             cache_key = context.send(:cache_key)
             content = 'some content'
-            @controller_mock.should_receive(:write_fragment).once.with(cache_key, content, :ttl => 300)
+            @controller_mock.should_receive(:write_fragment).once.with(cache_key, content, :ttl => 420)
+            
+            @controller_mock.should_receive(:send).
+              with(:context_cache_duration_for_category_dir__to__type).once.and_return(7.minutes)
             
             context.cache content
           end
@@ -60,7 +63,7 @@ describe Context do
       end
       describe "disabled caching" do
         before(:each) do
-          @controller_mock.should_receive(:respond_to?).with(:cache_context_for_category_dir__to__type?).once.and_return(false)
+          @controller_mock.should_receive(:respond_to?).with(:context_cache_duration_for_category_dir__to__type).once.and_return(false)
         end
         it "should not use caching" do
           context.caching_enabled?.should be_false
