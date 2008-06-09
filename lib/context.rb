@@ -37,16 +37,14 @@ class Context
   # Does the actual rendering, caching, and view exposing to the controller.
   #
   def render
-    caching_enabled = caching_enabled?
-    
-    fragment = cached_fragment if caching_enabled
+    fragment = cached_fragment if caching_enabled?
     return fragment if fragment
     
-    view_instance = view_instance_from view_class
+    view = view_instance #_from view_class
     load_data_from_controller_into bucket
-    load_data_from_bucket_into view_instance
+    load_data_from_bucket_into view
     
-    content = render_content_for view_instance
+    content = render_content_for view
     cache content if caching_enabled?
     content
   end
@@ -54,7 +52,8 @@ class Context
   # Checks if caching is enabled for this controller, category, and type.
   #
   def caching_enabled?
-    cache_duration != false
+    caching_enabled_method_name = "context_cache_duration_for_#{category}_#{type_method_name}".to_sym
+    controller.respond_to?(caching_enabled_method_name)
   end
   
   # Caches the given fragment for this context.
@@ -64,12 +63,10 @@ class Context
   end
   
   private
-  
-    # Gets the cache duration from the controller.
-    #
+    
     def cache_duration
       caching_enabled_method_name = "context_cache_duration_for_#{category}_#{type_method_name}".to_sym
-      controller.respond_to?(caching_enabled_method_name) && controller.send(caching_enabled_method_name)
+      controller.send(caching_enabled_method_name)
     end
   
     # Renders the template for the context with the given view instance.
@@ -102,17 +99,18 @@ class Context
     
     # Creates a new view instance from the given view class.
     #
-    def view_instance_from(view_class)
-      view_class.new(controller.template_root, bucket.instance_variables)
+    def view_instance #_from(view_class)
+      controller.response.template
+      # view_class.new(controller.template_root, bucket.instance_variables)
     end
     
     # Gets the view class from the controller, adding caching capabilities.
     #
-    def view_class
-      view_klass = controller.class.send :view_class
-      view_klass.send :include, CacheKeyFactory
-      view_klass
-    end
+    # def view_class
+    #   view_klass = controller.response.template.class # TODO
+    #   view_klass.send :include, CacheKeyFactory
+    #   view_klass
+    # end
     
     # Cache key for contexts.
     #

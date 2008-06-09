@@ -39,14 +39,14 @@ describe Context do
         @context = Context.new(@controller_mock, @view_mock, 'category')
       end
       describe "enabled caching" do
-        before(:each) do
-          @controller_mock.should_receive(:respond_to?).
-            with(:context_cache_duration_for_category_dir__to__type).once.and_return(true)
-          @controller_mock.should_receive(:send).
-            with(:context_cache_duration_for_category_dir__to__type).once.and_return(5.minutes)
-        end
-        it "should use caching" do
-          context.caching_enabled?.should be_true
+        describe "caching" do
+          before(:each) do
+            @controller_mock.should_receive(:respond_to?).with(:cache_context_for_category_dir__to__type?).once.and_return(true)
+            @controller_mock.should_receive(:send).with(:cache_context_for_category_dir__to__type?).once.and_return(true)
+          end
+          it "should use caching" do
+            context.caching_enabled?.should be_true
+          end
         end
         describe "cache" do
           it "should delegate writing the fragment to the controller" do
@@ -60,7 +60,7 @@ describe Context do
       end
       describe "disabled caching" do
         before(:each) do
-          @controller_mock.should_receive(:respond_to?).with(:context_cache_duration_for_category_dir__to__type).once.and_return(false)
+          @controller_mock.should_receive(:respond_to?).with(:cache_context_for_category_dir__to__type?).once.and_return(false)
         end
         it "should not use caching" do
           context.caching_enabled?.should be_false
