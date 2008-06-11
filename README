@@ -1,3 +1,8 @@
+# Contexts
+# A Rails Plugin
+#
+# Feedback please to florian.hanke@gmail.com, thanks! :)
+#
 # This plugin is a simple alternative for components.
 # It is not a full replacement, however. It aims lower, namely:
 # - Sub-per-action component definitions.
