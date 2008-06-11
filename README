@@ -15,46 +15,57 @@
 # - And so on…
  
 # In the view, e.g. application.haml call
-render_context(category)
+render_context context_category_name
  
 # Example:
-render_context(:left_sidebar)
+render_context :left_sidebar
 # In this case, the specific context is determined by the controller, just
-# define the context for this controller as follows:
+# define the context for this controller as follows.
+context context_category_name,
+  default_context_name,
+  [action_name, other_action_name] => action_specific_context_name,
+  some_other_action_name => yet_another_action_specific_context_name # etc.
+# OR by using a block
+context context_category_name do
+  # determine a context type as you wish (e.g. randomly), then return the context name
+end
+# Use top_ten_books as context for the context category left_sidebar in _all_ actions.
 context :left_sidebar, :top_ten_books
-# if you wish to differentiate between actions, define the default first, then specific contexts
-# for specific actions
+# Use top_ten_books as context for the context category left_sidebar in all actions
+# _except_ buy, browse and login. Use other_books_you_might_like for buy and browse,
+# and welcome for the login action.
 context :left_sidebar, :top_ten_books,
   [:buy, :browse] => :other_books_you_might_like,
   :login => :welcome
-# For the login action you wish to display the welcome context in the left sidebar, for the buy and browse action, some exploratory books are shown. For all other actions, e.g. index, edit, show, just show the current top ten books.
  
-# OR if the specific context type should not be determined by the controller:
-render_context(category, type)
+# OR if the specific context type should _not_ be determined by the controller.
+render_context context_category_name, context_type_name
+# This just renders the context for the top ten books in the left sidebar without
+# asking the controller to determine which context type should be used for the left sidebar.
+render_context :left_sidebar, :top_ten_books
+ 
+# Loading variables for your contexts is done in the ApplicationController (or if it should not be
+# available everywhere in the Controller needed)
+#
+# In your ApplicationController call the following to load instance variables for the context in category and type.
+# Currently supported options are:
+#   :cache => 7.minutes
+load_context(category, type, options = {}, &loading_instance_variables_block)
  
 # Example
-render_context(:left_sidebar, :top_ten_books)
-# This just renders the context for the top ten books in the left sidebar
- 
-# Loading variables for your contexts is done in the ApplicationController (or in the Controller needed)
 #
-# In your ApplicationController call
-load_context(category, type, [options], &loading_instance_variables_block)
- 
-# Currently supported options are:
-# :cache => true
- 
-# Example:
-load_context :left_sidebar, :top_ten_books, :cache => true do
+load_context :left_sidebar, :top_ten_books, :cache => 5.minutes do
   @books = Books.top(10)
 end
+
 # This loads the top ten books into the variable @books, which can then be used in the view file top_ten_books.haml:
 %h1 Top Ten Books
 - for book in @books do
   %h2= book.title
   %p= book.description
   = link_to_add_to_cart(book)
-# The context view files should be in views/contexts/<category>/<type>.haml (or .erb)
+
+# The context view files should be in views/contexts/<category>/<type>.html.haml (or .text.erb or what have you)
 #
-# Example: The above file would be in
+# The file in the example above would be in:
 # app/views/contexts/left_sidebar/top_ten_books.haml
