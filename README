@@ -63,14 +63,15 @@ load_context :left_sidebar, :top_ten_books, :cache => 5.minutes do
   @books = Books.top(10)
 end
 
-# This loads the top ten books into the variable @books, which can then be used in the view file top_ten_books.haml:
+# This loads the top ten books into the variable @books, which can then be used in the partial contexts/left_sidebar/_top_ten_books.html.haml:
 %h1 Top Ten Books
 - for book in @books do
   %h2= book.title
   %p= book.description
   = link_to_add_to_cart(book)
 
-# The context view files should be in views/contexts/<category>/<type>.html.haml (or .text.erb or what have you)
+# The context view files should be in views/contexts/<category>/<type>.html.haml (or .text.erb or
+# what have you, depending on the request format)
 #
 # The file in the example above would be in:
-# app/views/contexts/left_sidebar/top_ten_books.haml
+# app/views/contexts/left_sidebar/top_ten_books.html.haml
