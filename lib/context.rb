@@ -40,7 +40,7 @@ class Context
     fragment = cached_fragment if caching_enabled?
     return fragment if fragment
     
-    view = view_instance #_from view_class
+    view = view_instance
     load_data_from_controller_into bucket
     load_data_from_bucket_into view
     
@@ -72,7 +72,13 @@ class Context
     # Renders the template for the context with the given view instance.
     #
     def render_content_for(view_instance)
-      view_instance.render_file(File.join(RAILS_ROOT, 'app/views', 'contexts', category.to_s, "#{type}.haml"), false)
+      view_instance.render :partial => template_path
+    end
+    
+    # Returns the template path: contexts/<category>/<type>.
+    #
+    def template_path
+      "contexts/#{category}/#{type}"
     end
     
     # Calls the load context data method on the controller to fill the bucket with data.
@@ -99,9 +105,8 @@ class Context
     
     # Creates a new view instance from the given view class.
     #
-    def view_instance #_from(view_class)
+    def view_instance
       controller.response.template
-      # view_class.new(controller.template_root, bucket.instance_variables)
     end
     
     # Gets the view class from the controller, adding caching capabilities.

@@ -13,12 +13,36 @@ describe Context do
   describe "type given" do
     it "should not use the controller to determine type" do
       @controller_mock.should_receive(:send).with('determine_context_type_for_category').never
-      
-      Context.new(@controller_mock, @view_mock, 'category', 'some_type')
     end
     it "should generate a key from #context_cache_key" do
       context = Context.new(@controller_mock, @view_mock, 'category', 'some_type')
       context.send(:cache_key).should == 'context/category/some_type'
+    end
+  end
+  
+  describe "with Context" do
+    before(:each) do
+      @context = Context.new(@controller_mock, @view_mock, 'some_category', 'some_type')
+    end
+    describe "#render_content_for" do
+      it "should render a partial" do
+        template_path_mock = flexmock(:template_path)
+        flexmock(@context).should_receive(:template_path).and_return template_path_mock
+        
+        view_mock = flexmock(:view)
+        view_mock.should_receive(:render).with(:partial => template_path_mock)
+        
+        in_the @context do
+          render_content_for view_mock
+        end
+      end
+    end
+    describe "#template_path" do
+      it "should return a path consisting of contexts/category/type" do
+        in_the @context do
+          template_path.should == "contexts/some_category/some_type"
+        end
+      end
     end
   end
 
