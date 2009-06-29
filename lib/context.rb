@@ -6,29 +6,34 @@ class Context
   # path/to/some_template to path__to__some_template
   # making it useable for method names.
   #
-  def self.methodify(type)
+  def self.methodify type
     type.to_s.gsub('/','__')
   end
   
-  def initialize(controller, view, category, type = nil)
+  def initialize controller, view, category, type = nil
     @controller, @view, @category = controller, view, category
     
     # determine context type from controller if the user has not specifically given a type
+    #
     @type = type || controller.send("determine_context_type_for_#{category}")
     
+    #
     #
     @type_method_name = self.class.methodify(@type)
     
     # save the view instance variables for view initialization
+    #
     @view_instance_variables = view.instance_variables.inject({}) do |vars, var|
       vars[var] = view.instance_variable_get(var)
       vars
     end
     
     # instantiate a data bucket we expose to the controller
+    #
     @bucket = Object.new
     
     # fill the bucket with view instance variables
+    #
     @view_instance_variables.each do |k,v|
       @bucket.instance_variable_set(k, v)
     end
@@ -58,7 +63,7 @@ class Context
   
   # Caches the given fragment for this context.
   #
-  def cache(content)
+  def cache content
     controller.write_fragment cache_key, content, :ttl => cache_duration
   end
   
@@ -83,7 +88,7 @@ class Context
     
     # Calls the load context data method on the controller to fill the bucket with data.
     #
-    def load_data_from_controller_into(bucket)
+    def load_data_from_controller_into bucket
       load_context_data_method_name = "load_context_data_for_#{category}_#{type_method_name}"
       # expose the context view instance to the controller
       controller.send load_context_data_method_name, bucket if controller.respond_to? load_context_data_method_name.to_sym
@@ -91,7 +96,7 @@ class Context
     
     # Load the data from the bucket into the view instance.
     #
-    def load_data_from_bucket_into(view_instance)
+    def load_data_from_bucket_into view_instance
       bucket.instance_variables.each do |var|
         view_instance.instance_variable_set(var, bucket.instance_variable_get(var))
       end
