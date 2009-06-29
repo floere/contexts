@@ -14,24 +14,24 @@ describe 'ContextHelper' do
     end
     describe "category given, but no type" do
       before(:each) do
-        context = flexmock(Context)
-        @context_instance = flexmock(:context)
-        context.should_receive(:new).once.and_return(@context_instance)
+        @context = stub :context
+        Context.should_receive(:new).once.and_return @context
       end
       it "should call the render method on the context" do
-        @context_instance.should_receive(:render).once
-        render_context(:title)
+        @context.should_receive(:render).once
+        
+        render_context :title
       end
     end
     describe "category and type given" do
       before(:each) do
-        context = flexmock(Context)
-        @context_instance = flexmock(:context)
-        context.should_receive(:new).once.and_return(@context_instance)
+        @context = stub :context
+        Context.should_receive(:new).once.and_return @context
       end
       it "should call the render method on the context" do
-        @context_instance.should_receive(:render).once
-        render_context(:title, :profile)
+        @context.should_receive(:render).once
+        
+        render_context :title, :profile
       end
     end
   end

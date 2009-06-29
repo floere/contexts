@@ -71,7 +71,7 @@ class Context
   
     # Renders the template for the context with the given view instance.
     #
-    def render_content_for(view_instance)
+    def render_content_for view_instance
       view_instance.render :partial => template_path
     end
     

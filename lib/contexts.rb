@@ -5,9 +5,9 @@
 #
 module Contexts
   
-  def self.included(base)
+  def self.included base
     base.class_eval do
-      base.extend(ClassMethods)
+      base.extend ClassMethods
     end
   end
   
@@ -25,7 +25,7 @@ module Contexts
     # or
     # context :title, :profile, [:some_action, :some_other_action] => :search, :another_action => :empty
     #
-    def context(category, default = nil, *specifics, &block)
+    def context category, default = nil, *specifics, &block
       raise 'Context needs a category.' unless category
       if block_given?
         define_method "determine_context_type_for_#{category}", &block
@@ -53,15 +53,15 @@ module Contexts
     # Creates code that is used to load context data for a specific category type.
     # load_context_data_for_<category>_<type>
     #
-    def load_context(category, type, options = {}, &block)
-      type_method_name_part = Context.methodify(type)
+    def load_context category, type, options = {}, &block
+      type_method_name_part = Context.methodify type
       if options[:cache]
         define_method "context_cache_duration_for_#{category}_#{type_method_name_part}" do
           options[:cache]
         end
       end
       define_method "load_context_data_for_#{category}_#{type_method_name_part}" do |view_instance|
-        view_instance.instance_eval(&block)
+        view_instance.instance_eval &block
       end
     end
     
