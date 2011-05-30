@@ -1,8 +1,8 @@
 h1. Contexts
 
-_A Rails 2 Plugin. This plugin is a simple alternative for components_.
+*A Rails 2 Plugin. This plugin is a simple alternative for components*.
 
-Feedback please to @florian.hanke+contexts@gmail.com@, thanks! :)
+Feedback please to @florian.hanke+contexts at gmail.com@, thanks! :)
 
 h2. Simple components alternative
 
