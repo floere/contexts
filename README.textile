@@ -12,17 +12,14 @@ It is not a full replacement, however. It aims lower, namely:
 * Sub-per-action component definitions.
 * Built-in caching.
 
-h2. Good for?
-
-It is good, when:
+h2. It is good, when:
 
 # You wish to define certain view parts that are used for many controller actions.
 # You wish to cache these view parts.
 # You wish to not have specific controllers to load the content for these view parts.
 
-h2. Use cases
+h3. Example use cases
 
-Good use cases:
 * Checkout Cart displayed in site sidebar.
 * Explorative Elements (e.g. Top Ten Books) in Sidebars.
 * Navigational Elements on almost all pages.
