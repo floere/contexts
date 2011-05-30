@@ -30,47 +30,37 @@ h2. Usage
 
 In the view, e.g. application.haml call
 
-```ruby
-render_context context_category_name
-```
+<pre><code>render_context context_category_name</code></pre>
 
 
 h3. Examples
 
 h4. Context chosen defined in the controller.
 
-```ruby
-render_context :left_sidebar
-```
+<pre><code>render_context :left_sidebar</code></pre>
 
 
 In this case, the specific context is determined by the controller, just
 define the context for this controller as follows:
 
-```ruby
-
+<pre><code>
 context context_category_name,
   default_context_name,
   [action_name, other_action_name] => action_specific_context_name,
-  some_other_action_name => yet_another_action_specific_context_name
-```
+  some_other_action_name => yet_another_action_specific_context_name</code></pre>
 
 
 *OR* by using a block
 
-```ruby
-context context_category_name do
+<pre><code>context context_category_name do
   # determine a context type as you wish (e.g. randomly),
   # then return the context name
-end
-```
+end</code></pre>
 
 
 Use @top_ten_books@ as context for the context category @left_sidebar@ in _all_ actions:
 
-```ruby
-context :left_sidebar, :top_ten_books
-```
+<pre><code>context :left_sidebar, :top_ten_books</code></pre>
 
 
 
@@ -78,17 +68,13 @@ Use top_ten_books as context for the context category @left_sidebar@ in all
 actions _except_ @buy@, @browse@ and @login@. Use @other_books_you_might_like@
 for @buy@ and @browse@, and @welcome@ for the @login@ action:
 
-```ruby
-context :left_sidebar, :top_ten_books,
+<pre><code>context :left_sidebar, :top_ten_books,
   [:buy, :browse] => :other_books_you_might_like,
-  :login => :welcome
-```
+  :login => :welcome</code></pre>
 
 *OR* if the specific context type should _not_ be determined by the controller.
 
-```ruby
-render_context context_category_name, context_type_name
-```
+<pre><code>render_context context_category_name, context_type_name</code></pre>
 
 h4. Explicit context (Context not determined in the controller).
 
@@ -96,9 +82,7 @@ The following just renders the context for the top ten books in the left sidebar
 without asking the controller to determine which context type should be used for
 the left sidebar.
 
-```ruby
-render_context :left_sidebar, :top_ten_books
-```
+<pre><code>render_context :left_sidebar, :top_ten_books</code></pre>
 
 h4. Loading variables for your contexts.
 
@@ -107,33 +91,25 @@ Loading variables for your contexts is done in the ApplicationController
 
 In your ApplicationController call the following to load instance variables for the context in category and type.
 
-```ruby
-load_context(category, type, options = {}, &loading_instance_variables_block)
-```
+<pre><code>load_context(category, type, options = {}, &loading_instance_variables_block)</code></pre>
 
 Currently supported options are @cache@, e.g.:
 
-```ruby
-:cache => 7.minutes
-```
+<pre><code>:cache => 7.minutes</code></pre>
 
 This loads the top ten books into the variable @@books@:
 
-```ruby
-load_context :left_sidebar, :top_ten_books, :cache => 5.minutes do
+<pre><code>load_context :left_sidebar, :top_ten_books, :cache => 5.minutes do
   @books = Books.top(10)
-end
-```
+end</code></pre>
 
 which can then be used in the partial @contexts/left_sidebar/_top_ten_books.html.haml@:
 
-```ruby
-%h1 Top Ten Books
+<pre><code>%h1 Top Ten Books
 - for book in @books do
   %h2= book.title
   %p= book.description
-  = link_to_add_to_cart(book)
-```
+  = link_to_add_to_cart(book)</code></pre>
 
 The context view files should be in @views/contexts/<category>/<type>.html.haml@ (or @.text.erb@ or what have you, depending on the request format)
 
