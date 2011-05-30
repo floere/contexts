@@ -43,8 +43,7 @@ h4. Context chosen defined in the controller.
 In this case, the specific context is determined by the controller, just
 define the context for this controller as follows:
 
-<pre><code>
-context context_category_name,
+<pre><code>context context_category_name,
   default_context_name,
   [action_name, other_action_name] => action_specific_context_name,
   some_other_action_name => yet_another_action_specific_context_name</code></pre>
