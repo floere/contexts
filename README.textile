@@ -31,14 +31,18 @@ h2. Usage
 In the view, e.g. application.haml call
 
 ```ruby
-render_context context_category_name</pre></code>
+render_context context_category_name
+```
+
 
 h3. Examples
 
 h4. Context chosen defined in the controller.
 
 ```ruby
-render_context :left_sidebar</pre></code>
+render_context :left_sidebar
+```
+
 
 In this case, the specific context is determined by the controller, just
 define the context for this controller as follows:
@@ -48,7 +52,9 @@ define the context for this controller as follows:
 context context_category_name,
   default_context_name,
   [action_name, other_action_name] => action_specific_context_name,
-  some_other_action_name => yet_another_action_specific_context_name</pre></code>
+  some_other_action_name => yet_another_action_specific_context_name
+```
+
 
 *OR* by using a block
 
@@ -56,12 +62,16 @@ context context_category_name,
 context context_category_name do
   # determine a context type as you wish (e.g. randomly),
   # then return the context name
-end</pre></code>
+end
+```
+
 
 Use @top_ten_books@ as context for the context category @left_sidebar@ in _all_ actions:
 
 ```ruby
-context :left_sidebar, :top_ten_books</pre></code>
+context :left_sidebar, :top_ten_books
+```
+
 
 
 Use top_ten_books as context for the context category @left_sidebar@ in all
